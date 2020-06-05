@@ -8719,7 +8719,7 @@ async function cabalConfig() {
         silent: true,
         listeners: { stdout: append, stderr: append }
     });
-    const file = out.toString();
+    const file = out.toString().trim();
     core.info(`file is ${file}`);
     return file.split('\n').slice(-1)[0].trim();
 }
