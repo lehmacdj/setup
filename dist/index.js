@@ -8431,8 +8431,13 @@ const exec_1 = __webpack_require__(986);
             await core.group('Pre-installing GHC with stack', async () => exec_1.exec('stack', ['setup', opts.ghc.resolved]));
         if (opts.cabal.enable)
             await core.group('Setting up cabal', async () => {
-                await exec_1.exec('cabal user-config update -a "http-transport: plain-http" -v3');
-                await exec_1.exec('cabal', ['update']);
+                await exec_1.exec('cabal user-config update');
+                const out = Buffer.from('');
+                const append = (b) => Buffer.concat([out, b]);
+                await exec_1.exec('cabal', ['--help'], {
+                    silent: true,
+                    listeners: { stdout: append, stderr: append }
+                });
                 if (process.platform === 'win32') {
                     await exec_1.exec('cabal user-config update -a "store-dir: C:\\sr" -v3');
                     core.setOutput('cabal-store', 'C:\\sr');
@@ -8440,6 +8445,8 @@ const exec_1 = __webpack_require__(986);
                 else {
                     core.setOutput('cabal-store', `${process.env.HOME}/.cabal/store`);
                 }
+                if (!opts.stack.enable)
+                    await exec_1.exec('cabal update');
             });
     }
     catch (error) {
@@ -10676,8 +10683,13 @@ async function isInstalled(tool, version, os) {
             .access(p)
             .then(() => p)
             .catch(() => undefined);
-        if (installedPath)
+        if (installedPath) {
+            // Make sure that the correct ghc is used, even if ghcup has set a
+            // default prior to this action being ran.
+            if (tool === 'ghc' && installedPath === ghcupPath)
+                await exec_1.exec(tc.find('ghcup', '0.1.5'), ['set', version]);
             return success(tool, version, installedPath);
+        }
     }
     if (tool === 'cabal' && os !== 'win32') {
         const installedPath = await fs_1.promises
@@ -10755,9 +10767,10 @@ async function choco(tool, version) {
 }
 async function ghcup(tool, version, os) {
     core.info(`Attempting to install ${tool} ${version} using ghcup`);
-    const v = '0.1.4';
+    const v = '0.1.5';
     const bin = await tc.downloadTool(`https://downloads.haskell.org/~ghcup/${v}/x86_64-${os === 'darwin' ? 'apple-darwin' : 'linux'}-ghcup-${v}`);
     await fs_1.promises.chmod(bin, 0o755);
+    await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
     await exec_1.exec(bin, [tool === 'ghc' ? 'install' : 'install-cabal', version]);
     if (tool === 'ghc')
         await exec_1.exec(bin, ['set', version]);
