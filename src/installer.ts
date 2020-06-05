@@ -191,10 +191,8 @@ async function ghcup(tool: Tool, version: string, os: OS): Promise<void> {
           os === 'darwin' ? 'apple-darwin' : 'linux'
         }-ghcup-${v}`
       );
-  if (!cachedBin) {
-    await fs.chmod(bin, 0o755);
-    await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
-  }
+  await fs.chmod(bin, 0o755);
+  if (!cachedBin) await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
 
   await exec(bin, [tool === 'ghc' ? 'install' : 'install-cabal', version]);
   if (tool === 'ghc') await exec(bin, ['set', version]);
