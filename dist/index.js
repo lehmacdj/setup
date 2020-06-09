@@ -11036,7 +11036,7 @@ async function isInstalled(tool, version, os) {
             // Make sure that the correct ghc is used, even if ghcup has set a
             // default prior to this action being ran.
             if (tool === 'ghc' && installedPath === ghcupPath)
-                await ghcup('ghc', version, os);
+                await exec_1.exec(await ghcupBin(os), ['set', version]);
             return success(tool, version, installedPath);
         }
     }
@@ -11114,18 +11114,18 @@ async function choco(tool, version) {
         '-r'
     ]);
 }
+async function ghcupBin(os) {
+    const v = '0.1.5';
+    const cachedBin = tc.find('ghcup', v);
+    if (cachedBin)
+        return path_1.join(cachedBin, 'ghcup');
+    const bin = await tc.downloadTool(`https://downloads.haskell.org/ghcup/${v}/x86_64-${os === 'darwin' ? 'apple-darwin' : 'linux'}-ghcup-${v}`);
+    await fs_1.promises.chmod(bin, 0o755);
+    return await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
+}
 async function ghcup(tool, version, os) {
     core.info(`Attempting to install ${tool} ${version} using ghcup`);
-    const v = '0.1.5';
-    let cachedBin = tc.find('ghcup', v);
-    if (cachedBin)
-        cachedBin = path_1.join(cachedBin, 'ghcup');
-    const bin = cachedBin
-        ? cachedBin
-        : await tc.downloadTool(`https://downloads.haskell.org/~ghcup/${v}/x86_64-${os === 'darwin' ? 'apple-darwin' : 'linux'}-ghcup-${v}`);
-    await fs_1.promises.chmod(bin, 0o755);
-    if (!cachedBin)
-        await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
+    const bin = await ghcupBin(os);
     await exec_1.exec(bin, [tool === 'ghc' ? 'install' : 'install-cabal', version]);
     if (tool === 'ghc')
         await exec_1.exec(bin, ['set', version]);
