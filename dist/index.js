@@ -11121,7 +11121,7 @@ async function ghcupBin(os) {
         return path_1.join(cachedBin, 'ghcup');
     const bin = await tc.downloadTool(`https://downloads.haskell.org/ghcup/${v}/x86_64-${os === 'darwin' ? 'apple-darwin' : 'linux'}-ghcup-${v}`);
     await fs_1.promises.chmod(bin, 0o755);
-    return await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
+    return path_1.join(await tc.cacheFile(bin, 'ghcup', 'ghcup', v), 'ghcup');
 }
 async function ghcup(tool, version, os) {
     core.info(`Attempting to install ${tool} ${version} using ghcup`);

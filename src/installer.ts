@@ -190,7 +190,7 @@ async function ghcupBin(os: OS): Promise<string> {
     }-ghcup-${v}`
   );
   await fs.chmod(bin, 0o755);
-  return await tc.cacheFile(bin, 'ghcup', 'ghcup', v);
+  return join(await tc.cacheFile(bin, 'ghcup', 'ghcup', v), 'ghcup');
 }
 
 async function ghcup(tool: Tool, version: string, os: OS): Promise<void> {
