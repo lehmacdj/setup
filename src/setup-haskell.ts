@@ -12,9 +12,7 @@ async function cabalConfig(): Promise<string> {
     silent: true,
     listeners: {stdout: append, stderr: append}
   });
-  const file = out.toString().trim();
-  core.info(`file is ${file}`);
-  return file.split('\n').slice(-1)[0].trim();
+  return out.toString().trim().split('\n').slice(-1)[0].trim();
 }
 
 (async () => {
@@ -36,7 +34,6 @@ async function cabalConfig(): Promise<string> {
       await core.group('Setting up cabal', async () => {
         await exec('cabal', ['user-config', 'update'], {silent: true});
         const configFile = await cabalConfig();
-        core.info(`the config file is: ${configFile}`);
         fs.appendFileSync(configFile, 'http-transport: plain-http\n');
 
         if (process.platform === 'win32') {
