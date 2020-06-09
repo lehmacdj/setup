@@ -11117,12 +11117,9 @@ async function choco(tool, version) {
 async function ghcup(tool, version, os) {
     core.info(`Attempting to install ${tool} ${version} using ghcup`);
     const v = '0.1.5';
-    let cachedBin;
-    try {
-        cachedBin = tc.find('ghcup', v);
-    }
-    finally {
-    }
+    let cachedBin = tc.find('ghcup', v);
+    if (cachedBin)
+        cachedBin = path_1.join(cachedBin, 'ghcup');
     const bin = cachedBin
         ? cachedBin
         : await tc.downloadTool(`https://downloads.haskell.org/~ghcup/${v}/x86_64-${os === 'darwin' ? 'apple-darwin' : 'linux'}-ghcup-${v}`);

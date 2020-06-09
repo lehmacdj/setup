@@ -183,11 +183,8 @@ async function ghcup(tool: Tool, version: string, os: OS): Promise<void> {
   core.info(`Attempting to install ${tool} ${version} using ghcup`);
 
   const v = '0.1.5';
-  let cachedBin;
-  try {
-    cachedBin = tc.find('ghcup', v);
-  } finally {
-  }
+  let cachedBin = tc.find('ghcup', v);
+  if (cachedBin) cachedBin = join(cachedBin, 'ghcup');
   const bin = cachedBin
     ? cachedBin
     : await tc.downloadTool(
