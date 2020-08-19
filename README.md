@@ -124,8 +124,10 @@ jobs:
 **GHC:**
 
 - `latest` (default, recommended)
-- `8.10.1` `8.10`
-- `8.8.3` `8.8`
+- `8.10.2` `8.10`
+- `8.10.1`
+- `8.8.4` `8.8`
+- `8.8.3`
 - `8.8.2`
 - `8.8.1`
 - `8.6.5` `8.6`
@@ -158,6 +160,7 @@ Recommendation: Use the latest available version if possible.
 
 - `latest` (recommended) -- follows the latest release automatically.
 - `2.3.1` `2.3`
+- `2.3.1`
 - `2.1.3` `2.1`
 - `2.1.1`
 - `1.9.3.1` `1.9`
