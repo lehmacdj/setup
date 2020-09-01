@@ -868,7 +868,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOpts = exports.getDefaults = void 0;
+exports.getOpts = exports.resolve = exports.getDefaults = void 0;
 const core = __importStar(__webpack_require__(470));
 const fs_1 = __webpack_require__(747);
 const js_yaml_1 = __webpack_require__(414);
@@ -896,6 +896,7 @@ function resolve(version, supported) {
         ? supported[0]
         : (_a = supported.find(v => v.startsWith(version))) !== null && _a !== void 0 ? _a : version;
 }
+exports.resolve = resolve;
 function getOpts({ ghc, cabal, stack }) {
     const stackNoGlobal = core.getInput('stack-no-global') !== '';
     const stackSetupGhc = core.getInput('stack-setup-ghc') !== '';
