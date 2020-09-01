@@ -44,7 +44,10 @@ jobs:
           - os: ubuntu-latest
             ghc: '8.2.2'
             cabal: '2.0'
+          - os: ubuntu-latest
+            ghc: '8.12.0' # A version that will never exist.
 
+    continue-on-error: "${{ matrix.ghc == '8.12.0' }}"
     steps:
       - uses: actions/checkout@v2
       - uses: ./
