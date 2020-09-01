@@ -189,7 +189,7 @@ async function choco(tool: Tool, version: string): Promise<void> {
 }
 
 async function ghcupBin(os: OS): Promise<string> {
-  const v = '0.1.9';
+  const v = '0.1.10';
   const cachedBin = tc.find('ghcup', v);
   if (cachedBin) return join(cachedBin, 'ghcup');
 
@@ -205,12 +205,8 @@ async function ghcupBin(os: OS): Promise<string> {
 async function ghcup(tool: Tool, version: string, os: OS): Promise<void> {
   core.info(`Attempting to install ${tool} ${version} using ghcup`);
   const bin = await ghcupBin(os);
-  const returnCode = await exec(
-    bin,
-    [tool === 'ghc' ? 'install' : 'install-cabal', version],
-    {
-      ignoreReturnCode: true
-    }
-  );
-  if (returnCode === 0 && tool === 'ghc') await exec(bin, ['set', version]);
+  const returnCode = await exec(bin, ['install', tool, version], {
+    ignoreReturnCode: true
+  });
+  if (returnCode === 0) await exec(bin, ['set', tool, version]);
 }
