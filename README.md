@@ -185,7 +185,12 @@ The full list of available versions of GHC, Cabal, and Stack are as follows:
 - [Windows - GHC](https://chocolatey.org/packages/ghc#versionhistory)
 - [Linux/macOS/Windows - Stack](https://github.com/commercialhaskell/stack/tags)
 
-Note: There are _technically_ some descrepencies here. For example, "8.10.1-alpha1" will work for a ghc version for windows but not for Linux and macOS. For your sanity, I suggest sticking with the version lists above which are supported across all three operating systems.
+## Notes regarding internal implementation details:
+
+There are _technically_ some descrepencies here. For example, "8.10.1-alpha1" will work for a ghc version for windows but not for Linux and macOS. For your sanity, I suggest sticking with the version lists above which are supported across all three operating systems.
+
+`versions.json` exists an internal implementation detail because there's no nice way to otherwise suport short versions. If a version is not inside `versions.json`, the tool will happily attempt to use exactly what is specified.
+This is to prevent `versions.json` from breaking any builds as it is, by design, an incomplete subset of possible versions.
 
 ## License
 
