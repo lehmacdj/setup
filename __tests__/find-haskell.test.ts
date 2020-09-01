@@ -1,4 +1,4 @@
-import {getOpts, getDefaults, Tool} from '../src/opts';
+import {getOpts, getDefaults, Tool, resolve} from '../src/opts';
 import {getInput} from '@actions/core';
 import * as supported_versions from '../src/versions.json';
 
@@ -32,6 +32,9 @@ describe('actions/setup-haskell', () => {
   it('Parses action.yml to get correct default versions', () => {
     forAll(t => expect(def[t].version).toBe(latestVersions[t]));
   });
+
+  it('Non-existing versions also work.', () =>
+    expect(resolve('bogus', [])).toBe('bogus'));
 
   it('Supported versions are parsed from JSON correctly', () =>
     forAll(t => expect(def[t].supported).toBe(supported_versions[t])));

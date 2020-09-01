@@ -41,7 +41,7 @@ export function getDefaults(): Defaults {
   };
 }
 
-function resolve(version: string, supported: string[]): string {
+export function resolve(version: string, supported: string[]): string {
   return version === 'latest'
     ? supported[0]
     : supported.find(v => v.startsWith(version)) ?? version;
