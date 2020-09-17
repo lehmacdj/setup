@@ -63,7 +63,7 @@ jobs:
           runhaskell __tests__/hello.hs
         continue-on-error: ${{ matrix.expect-fail }}
       - working-directory: __tests__/project
-        run: cabal build && cabal run
+        run: cabal build
         continue-on-error: ${{ matrix.expect-fail }}
       - working-directory: __tests__/project
         run: cabal run
