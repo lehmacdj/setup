@@ -149,6 +149,7 @@ Suggestion: Try to support the three latest major versions of GHC.
 **Cabal:**
 
 - `latest` (default, recommended)
+- `3.4.0.0` `3.4`
 - `3.2.0.0` `3.2`
 - `3.0.0.0` `3.0`
 - `2.4.1.0` `2.4`
