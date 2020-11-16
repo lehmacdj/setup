@@ -103,10 +103,10 @@ async function isInstalled(
       .catch(() => undefined);
 
     if (installedPath) {
-      // Make sure that the correct ghc is used, even if ghcup has set a
+      // Make sure that the correct ghc/cabal is used, even if ghcup has set a
       // default prior to this action being ran.
       if (tool === 'ghc' && installedPath === ghcupPath)
-        await exec(await ghcupBin(os), ['set', version]);
+        await exec(await ghcupBin(os), ['set', tool, version]);
 
       return success(tool, version, installedPath, os);
     }
@@ -118,7 +118,10 @@ async function isInstalled(
       .then(() => ghcupPath)
       .catch(() => undefined);
 
-    if (installedPath) return success(tool, version, installedPath, os);
+    if (installedPath) {
+      await exec(await ghcupBin(os), ['set', tool, version]);
+      return success(tool, version, installedPath, os);
+    }
   }
 
   return false;
