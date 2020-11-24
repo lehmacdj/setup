@@ -874,26 +874,29 @@ const fs_1 = __webpack_require__(747);
 const js_yaml_1 = __webpack_require__(414);
 const path_1 = __webpack_require__(622);
 const supported_versions = __importStar(__webpack_require__(447));
-function getDefaults() {
+const rv = __importStar(__webpack_require__(859));
+const release_revisions = rv;
+function getDefaults(os) {
     const inpts = js_yaml_1.safeLoad(fs_1.readFileSync(__webpack_require__.ab + "action.yml", 'utf8')).inputs;
-    const mkVersion = (v, vs) => ({
-        version: resolve(inpts[v].default, vs),
+    const mkVersion = (v, vs, t) => ({
+        version: resolve(inpts[v].default, vs, t, os),
         supported: vs
     });
     return {
-        ghc: mkVersion('ghc-version', supported_versions.ghc),
-        cabal: mkVersion('cabal-version', supported_versions.cabal),
-        stack: mkVersion('stack-version', supported_versions.stack)
+        ghc: mkVersion('ghc-version', supported_versions.ghc, 'ghc'),
+        cabal: mkVersion('cabal-version', supported_versions.cabal, 'cabal'),
+        stack: mkVersion('stack-version', supported_versions.stack, 'stack')
     };
 }
 exports.getDefaults = getDefaults;
-function resolve(version, supported) {
-    var _a;
-    return version === 'latest'
+function resolve(version, supported, tool, os) {
+    var _a, _b, _c, _d, _e;
+    const resolved = version === 'latest'
         ? supported[0]
         : (_a = supported.find(v => v.startsWith(version))) !== null && _a !== void 0 ? _a : version;
+    return ((_e = (_d = (_c = (_b = release_revisions === null || release_revisions === void 0 ? void 0 : release_revisions[os]) === null || _b === void 0 ? void 0 : _b[tool]) === null || _c === void 0 ? void 0 : _c.find(({ from }) => from === resolved)) === null || _d === void 0 ? void 0 : _d.to) !== null && _e !== void 0 ? _e : resolved);
 }
-function getOpts({ ghc, cabal, stack }) {
+function getOpts({ ghc, cabal, stack }, os) {
     const stackNoGlobal = core.getInput('stack-no-global') !== '';
     const stackSetupGhc = core.getInput('stack-setup-ghc') !== '';
     const stackEnable = core.getInput('enable-stack') !== '';
@@ -915,17 +918,17 @@ function getOpts({ ghc, cabal, stack }) {
     const opts = {
         ghc: {
             raw: verInpt.ghc,
-            resolved: resolve(verInpt.ghc, ghc.supported),
+            resolved: resolve(verInpt.ghc, ghc.supported, 'ghc', os),
             enable: !stackNoGlobal
         },
         cabal: {
             raw: verInpt.cabal,
-            resolved: resolve(verInpt.cabal, cabal.supported),
+            resolved: resolve(verInpt.cabal, cabal.supported, 'cabal', os),
             enable: !stackNoGlobal
         },
         stack: {
             raw: verInpt.stack,
-            resolved: resolve(verInpt.stack, stack.supported),
+            resolved: resolve(verInpt.stack, stack.supported, 'stack', os),
             enable: stackEnable,
             setup: core.getInput('stack-setup-ghc') !== ''
         }
@@ -8693,9 +8696,10 @@ async function cabalConfig() {
 (async () => {
     try {
         core.info('Preparing to setup a Haskell environment');
-        const opts = opts_1.getOpts(opts_1.getDefaults());
+        const os = process.platform;
+        const opts = opts_1.getOpts(opts_1.getDefaults(os), os);
         for (const [t, { resolved }] of Object.entries(opts).filter(o => o[1].enable))
-            await core.group(`Installing ${t} version ${resolved}`, async () => installer_1.installTool(t, resolved, process.platform));
+            await core.group(`Installing ${t} version ${resolved}`, async () => installer_1.installTool(t, resolved, os));
         if (opts.stack.setup)
             await core.group('Pre-installing GHC with stack', async () => exec_1.exec('stack', ['setup', opts.ghc.resolved]));
         if (opts.cabal.enable)
@@ -10793,6 +10797,13 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
+
+/***/ }),
+
+/***/ 859:
+/***/ (function(module) {
+
+module.exports = {"win32":{"ghc":[{"from":"8.10.2","to":"8.10.2.2"},{"from":"8.10.1","to":"8.10.1.1"},{"from":"8.8.4","to":"8.8.4.1"},{"from":"8.8.3","to":"8.8.3.1"},{"from":"8.8.2","to":"8.8.2.1"},{"from":"8.6.1","to":"8.6.1.1"},{"from":"8.0.2","to":"8.0.2.2"},{"from":"7.8.4","to":"7.8.4.1"},{"from":"7.8.3","to":"7.8.3.1"},{"from":"7.8.2","to":"7.8.2.1"},{"from":"7.8.1","to":"7.8.1.1"},{"from":"7.6.3","to":"7.6.3.1"},{"from":"7.6.2","to":"7.6.2.1"},{"from":"7.6.1","to":"7.6.1.1"}]}};
 
 /***/ }),
 
