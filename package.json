@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/setup-haskell.git"
+    "url": "git+https://github.com/haskell-CI/setup.git"
   },
   "keywords": [
     "actions",
@@ -32,8 +32,8 @@
     "@types/jest": "^26.0.14",
     "@types/js-yaml": "^3.12.5",
     "@types/node": "^14.10.3",
-    "@typescript-eslint/parser": "^4.1.1",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "@zeit/ncc": "^0.22.3",
     "eslint": "^7.9.0",
     "eslint-plugin-github": "^4.1.1",
